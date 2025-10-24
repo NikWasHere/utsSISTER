@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  # Aggregator service (Main service)
+  aggregator:
+    build: .
+    container_name: uts-aggregator
+    ports:
+      - "8080:8080"
+    volumes:
+      - aggregator-data:/app/data
+    networks:
+      - uts-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+networks:
+  uts-network:
+    driver: bridge
+
+volumes:
+  aggregator-data:
